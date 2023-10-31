@@ -6,8 +6,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RpgApi.Data;
 
-#nullable disable
-
 namespace RpgApi.Migrations
 {
     [DbContext(typeof(DataContext))]
@@ -17,24 +15,21 @@ namespace RpgApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.4")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.15")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("RpgApi.Models.Arma", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Dano")
                         .HasColumnType("int");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PersonagemId")
@@ -45,7 +40,7 @@ namespace RpgApi.Migrations
                     b.HasIndex("PersonagemId")
                         .IsUnique();
 
-                    b.ToTable("TB_ARMAS");
+                    b.ToTable("Armas");
 
                     b.HasData(
                         new
@@ -68,55 +63,49 @@ namespace RpgApi.Migrations
                             Dano = 31,
                             Nome = "Machado",
                             PersonagemId = 3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Dano = 30,
-                            Nome = "Punho",
-                            PersonagemId = 4
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Dano = 34,
-                            Nome = "Chicote",
-                            PersonagemId = 5
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Dano = 33,
-                            Nome = "Foice",
-                            PersonagemId = 6
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Dano = 32,
-                            Nome = "Cajado",
-                            PersonagemId = 7
                         });
+                });
+
+            modelBuilder.Entity("RpgApi.Models.Disputa", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AtacanteId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DataDisputa")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Narracao")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OponenteId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Disputas");
                 });
 
             modelBuilder.Entity("RpgApi.Models.Habilidade", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Dano")
                         .HasColumnType("int");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TB_HABILIDADES");
+                    b.ToTable("Habilidades");
 
                     b.HasData(
                         new
@@ -143,9 +132,8 @@ namespace RpgApi.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Classe")
                         .HasColumnType("int");
@@ -169,7 +157,6 @@ namespace RpgApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PontosVida")
@@ -185,7 +172,7 @@ namespace RpgApi.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("TB_PERSONAGENS");
+                    b.ToTable("Personagens");
 
                     b.HasData(
                         new
@@ -293,7 +280,7 @@ namespace RpgApi.Migrations
 
                     b.HasIndex("HabilidadeId");
 
-                    b.ToTable("TB_PERSONAGENS_HABILIDADES");
+                    b.ToTable("PersonagemHabilidades");
 
                     b.HasData(
                         new
@@ -347,58 +334,48 @@ namespace RpgApi.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("DataAcesso")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Foto")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<double?>("Latitude")
-                        .HasColumnType("float");
+                    b.Property<string>("Latitude")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Longitude")
-                        .HasColumnType("float");
+                    b.Property<string>("Longitude")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<byte[]>("PasswordSalt")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Perfil")
-                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("Jogador");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TB_USUARIOS");
+                    b.ToTable("Usuarios");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            Email = "seuEmail@gmail.com",
-                            Latitude = -23.520024100000001,
-                            Longitude = -46.596497999999997,
-                            PasswordHash = new byte[] { 204, 126, 57, 39, 92, 92, 116, 152, 46, 221, 12, 47, 79, 32, 162, 101, 138, 176, 184, 40, 21, 22, 11, 58, 44, 251, 238, 45, 203, 85, 166, 196, 81, 175, 65, 116, 90, 235, 6, 61, 225, 179, 92, 214, 247, 234, 161, 216, 158, 45, 239, 217, 23, 70, 73, 37, 148, 244, 49, 126, 71, 223, 135, 27 },
-                            PasswordSalt = new byte[] { 162, 160, 216, 195, 60, 217, 202, 137, 217, 77, 85, 221, 210, 29, 151, 254, 103, 50, 62, 3, 40, 152, 162, 235, 233, 16, 233, 3, 26, 105, 7, 38, 228, 155, 115, 206, 20, 174, 129, 14, 232, 44, 76, 20, 219, 169, 237, 247, 253, 87, 227, 116, 171, 233, 81, 242, 152, 88, 7, 217, 103, 248, 2, 76, 220, 100, 104, 247, 67, 125, 187, 19, 81, 158, 101, 30, 5, 52, 191, 236, 166, 193, 97, 159, 209, 55, 231, 243, 207, 255, 12, 30, 114, 52, 4, 189, 65, 54, 212, 118, 210, 160, 209, 221, 57, 69, 1, 254, 225, 46, 49, 223, 73, 181, 122, 22, 83, 150, 108, 142, 80, 44, 75, 90, 201, 39, 92, 4 },
-                            Perfil = "Admin",
+                            PasswordHash = new byte[] { 43, 176, 223, 190, 119, 176, 206, 101, 120, 97, 171, 76, 174, 36, 80, 43, 208, 151, 143, 68, 157, 184, 206, 96, 109, 71, 110, 62, 0, 138, 97, 159, 140, 244, 111, 168, 154, 61, 196, 134, 141, 82, 193, 180, 148, 6, 8, 187, 200, 91, 69, 147, 70, 68, 197, 253, 213, 71, 116, 151, 23, 207, 84, 19 },
+                            PasswordSalt = new byte[] { 100, 144, 233, 216, 133, 127, 9, 195, 223, 100, 200, 240, 145, 168, 2, 238, 96, 235, 255, 109, 33, 219, 19, 88, 17, 139, 42, 252, 164, 235, 139, 121, 180, 251, 101, 151, 248, 43, 124, 189, 103, 218, 15, 135, 222, 67, 183, 22, 84, 220, 214, 161, 129, 180, 85, 50, 55, 18, 252, 87, 197, 58, 28, 166, 125, 35, 129, 178, 35, 201, 73, 12, 157, 14, 6, 219, 228, 130, 224, 122, 186, 179, 184, 199, 52, 15, 94, 126, 201, 6, 191, 143, 35, 120, 57, 19, 9, 27, 79, 252, 22, 142, 210, 247, 20, 255, 148, 36, 97, 153, 217, 102, 37, 0, 97, 154, 129, 83, 24, 142, 47, 56, 176, 37, 48, 92, 151, 164 },
                             Username = "UsuarioAdmin"
                         });
                 });
@@ -449,8 +426,7 @@ namespace RpgApi.Migrations
 
             modelBuilder.Entity("RpgApi.Models.Personagem", b =>
                 {
-                    b.Navigation("Arma")
-                        .IsRequired();
+                    b.Navigation("Arma");
 
                     b.Navigation("PersonagemHabilidades");
                 });

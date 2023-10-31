@@ -1,34 +1,22 @@
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic; 
+using System; 
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RpgApi.Models
 {
-    [Table("TB_DISPUTAS")]
     public class Disputa
     {
-        [Key]
-        [Column("Id")]
         public int Id { get; set; }
-
-        [Column("Dt_Disputa")]
         public DateTime? DataDisputa { get; set; }
-
-        [Column("AtacanteId")]
         public int AtacanteId { get; set; }
-
-        [Column("OponenteId")]
         public int OponenteId { get; set; }
-        
-        [Column("Tx_Narracao")]
-        public string Narracao { get; set; } = string.Empty;
-
-        [NotMapped]
-        public int? HabilidadeId { get; set; }
-
-        [NotMapped]
-        public List<int>? ListaIdPersonagens { get; set; }
+        public string Narracao { get; set; }
         
         [NotMapped]
-        public List<string>? Resultados { get; set; }
+        public int HabilidadeId { get; set; }
+        [NotMapped]
+        public List<int> ListaIdPersonagens { get; set; } = new List<int>();
+        [NotMapped]
+        public List<string> Resultados { get; set; } = new List<string>();
     }
 }

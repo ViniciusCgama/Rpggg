@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RpgApi.Data;
@@ -11,9 +11,11 @@ namespace RpgApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+
     public class PersonagemHabilidadesController : ControllerBase
     {
         private readonly DataContext _context;
+
         public PersonagemHabilidadesController(DataContext context)
         {
             _context = context;
@@ -24,7 +26,7 @@ namespace RpgApi.Controllers
         {
             try
             {
-                Personagem personagem = await _context.TB_PERSONAGENS
+                Personagem personagem = await _context.Personagens
                     .Include(p => p.Arma)
                     .Include(p => p.PersonagemHabilidades).ThenInclude(ps => ps.Habilidade)
                     .FirstOrDefaultAsync(p => p.Id == novoPersonagemHabilidade.PersonagemId);
@@ -32,7 +34,7 @@ namespace RpgApi.Controllers
                 if (personagem == null)
                     throw new System.Exception("Personagem não encontrado para o Id Informado.");
 
-                Habilidade habilidade = await _context.TB_HABILIDADES
+                Habilidade habilidade = await _context.Habilidades
                                     .FirstOrDefaultAsync(h => h.Id == novoPersonagemHabilidade.HabilidadeId);
 
                 if (habilidade == null)
@@ -41,7 +43,7 @@ namespace RpgApi.Controllers
                 PersonagemHabilidade ph = new PersonagemHabilidade();
                 ph.Personagem = personagem;
                 ph.Habilidade = habilidade;
-                await _context.TB_PERSONAGENS_HABILIDADES.AddAsync(ph);
+                await _context.PersonagemHabilidades.AddAsync(ph);
                 int linhasAfetadas = await _context.SaveChangesAsync();
 
                 return Ok(linhasAfetadas);
@@ -58,10 +60,12 @@ namespace RpgApi.Controllers
             try
             {
                 List<PersonagemHabilidade> phLista = new List<PersonagemHabilidade>();
-                phLista = await _context.TB_PERSONAGENS_HABILIDADES
-                .Include(p => p.Personagem)
-                .Include(p => p.Habilidade)
-                .Where(p => p.Personagem.Id == personagemId).ToListAsync();
+
+                phLista = await _context.PersonagemHabilidades
+                    .Include(p => p.Personagem)
+                    .Include(p => p.Habilidade)
+                    .Where(p => p.Personagem.Id == personagemId).ToListAsync();
+
                 return Ok(phLista);
             }
             catch (System.Exception ex)
@@ -76,7 +80,8 @@ namespace RpgApi.Controllers
             try
             {
                 List<Habilidade> habilidades = new List<Habilidade>();
-                habilidades = await _context.TB_HABILIDADES.ToListAsync();
+                habilidades = await _context.Habilidades.ToListAsync();
+
                 return Ok(habilidades);
             }
             catch (System.Exception ex)
@@ -85,18 +90,19 @@ namespace RpgApi.Controllers
             }
         }
 
-       [HttpPost("DeletePersonagemHabilidade")]
+        [HttpPost("DeletePersonagemHabilidade")]
         public async Task<IActionResult> DeleteAsync(PersonagemHabilidade ph)
         {
             try
             {
-                PersonagemHabilidade phRemover = await _context.TB_PERSONAGENS_HABILIDADES
-                    .FirstOrDefaultAsync(phBusca => phBusca.PersonagemId == ph.PersonagemId
-                     && phBusca.HabilidadeId == ph.HabilidadeId);
-                if(phRemover == null)
+                PersonagemHabilidade phRemover = await _context.PersonagemHabilidades
+                .FirstOrDefaultAsync(phBusca => phBusca.PersonagemId == ph.PersonagemId
+                && phBusca.HabilidadeId == ph.HabilidadeId);
+
+                if (phRemover == null)
                     throw new System.Exception("Personagem ou Habilidade não encontrados");
 
-                _context.TB_PERSONAGENS_HABILIDADES.Remove(phRemover);
+                _context.PersonagemHabilidades.Remove(phRemover);
                 int linhasAfetadas = await _context.SaveChangesAsync();
                 return Ok(linhasAfetadas);
             }
@@ -109,9 +115,5 @@ namespace RpgApi.Controllers
 
 
 
-
-
-        
-        
     }
 }
